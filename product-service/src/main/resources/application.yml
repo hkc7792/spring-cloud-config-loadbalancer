@@ -1,5 +1,9 @@
+server:
+  port: 8082
 spring:
   application:
     name: product-service          # must match config repo filename
+  profiles:
+    active: dev
   config:
     import: "configserver:http://localhost:8888"
