@@ -1,2 +1,7 @@
 # format of url to hit config server
 http://{host}:{port}/{application}/{profile}/[{label}]
+
+examples:
+1. Get properties for order-service dev profile
+    spring.profiles.active=dev
+    url generated for config server  -  http://localhost:8888/order-service/dev
