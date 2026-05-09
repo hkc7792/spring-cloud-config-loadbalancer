@@ -1,0 +1,2 @@
+# format of url to hit config server
+http://{host}:{port}/{application}/{profile}/[{label}]

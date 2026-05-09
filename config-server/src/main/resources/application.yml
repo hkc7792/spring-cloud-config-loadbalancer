@@ -1,0 +1,25 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/hkc7792/spring-config-server  # your git repo
+          default-label: develop
+          clone-on-start: true
+          # For private repos, add:
+          # username: your-github-username
+          # password: your-github-token
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

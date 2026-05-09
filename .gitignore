@@ -1,0 +1,39 @@
+### --- Build Artifacts ---
+# Ignore compiled Java class files
+*.class
+# Ignore Log files
+*.log
+# Ignore Maven build directory
+target/
+# Ignore Gradle build directory
+build/
+
+### --- IDE Specific Files ---
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+# Eclipse
+.settings/
+.project
+.classpath
+# VS Code
+.vscode/
+
+### --- OS Specific ---
+.DS_Store
+Thumbs.db
+
+### --- Spring Cloud / Config Server ---
+# If you use a local directory for 'native' profile testing
+# Do not ignore your property files if they are the source of truth!
+# But ignore temporary search locations or local clones
+temp-config-repo/
+
+### --- Credentials & Sensitive Data ---
+# Never push secrets
+.env
+*.jks
+*.p12
+*.key

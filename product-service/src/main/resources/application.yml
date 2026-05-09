@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: product-service          # must match config repo filename
+  config:
+    import: "configserver:http://localhost:8888"
