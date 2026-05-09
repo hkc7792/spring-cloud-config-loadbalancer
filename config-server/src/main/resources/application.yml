@@ -8,9 +8,9 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/hkc7792/spring-cloud-config-loadbalancer.git # your git repo
+          uri: https://github.com/hkc7792/spring-config-server.git # your git repo
           default-label: develop
-          search-paths: config-files
+         # search-paths: config-files
           clone-on-start: true
           # For private repos, add:
           # username: your-github-username
@@ -20,7 +20,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,refresh
   endpoint:
     health:
       show-details: always
