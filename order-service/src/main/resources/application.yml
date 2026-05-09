@@ -1,5 +1,12 @@
+server:
+  port: 8081
 spring:
   application:
-    name: order-service
+    name: order-service    # should same source of truth for properties
+                           # ex-> order-service.yml , order-service-dev.yml
+  profiles:
+    active: dev
   config:
     import: "configserver:http://localhost:8888"
+
+

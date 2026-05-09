@@ -1,5 +1,6 @@
 package com.example.orderservice;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,9 @@ import java.util.UUID;
 public class OrderController {
 
     private final WebClient.Builder webClientBuilder;
+
+    @Autowired
+    private OrderServiceProperties orderServiceProperties;
 
     public OrderController(WebClient.Builder webClientBuilder) {
         this.webClientBuilder = webClientBuilder;
@@ -43,5 +47,12 @@ public class OrderController {
             "product",   product,
             "inventory", inventory
         );
+    }
+
+    @GetMapping("/test")
+    public void getProps(){
+        System.out.println("order-service max items : "+orderServiceProperties.getMax());
+        System.out.println("order-service purchasing in currency : "+orderServiceProperties.getCurrency());
+
     }
 }
