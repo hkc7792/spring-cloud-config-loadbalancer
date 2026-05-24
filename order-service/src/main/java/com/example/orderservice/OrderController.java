@@ -1,10 +1,9 @@
 package com.example.orderservice;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
 import java.util.UUID;
@@ -13,46 +12,31 @@ import java.util.UUID;
 @RequestMapping("/api/orders")
 public class OrderController {
 
-    private final WebClient.Builder webClientBuilder;
+    private final OrderService orderService;
+    private final OrderServiceProperties orderServiceProperties;
 
-    @Autowired
-    private OrderServiceProperties orderServiceProperties;
-
-    public OrderController(WebClient.Builder webClientBuilder) {
-        this.webClientBuilder = webClientBuilder;
+    public OrderController(OrderService orderService, OrderServiceProperties orderServiceProperties) {
+        this.orderService = orderService;
+        this.orderServiceProperties = orderServiceProperties;
     }
 
     @GetMapping
-    public Map<String, Object> placeOrder() {
-
-        // Spring Cloud Load Balancer resolves "product-service"
-        // to one of its registered instances in Eureka
-        Map<?, ?> product = webClientBuilder.build()
-                .get()
-                .uri("http://product-service/api/products/1")
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
-
-        Map<?, ?> inventory = webClientBuilder.build()
-                .get()
-                .uri("http://inventory-service/api/inventory/1")
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
-
-        return Map.of(
+    public Mono<Map<String, Object>> placeOrder() {
+        // Use Mono.zip to make concurrent, non-blocking calls
+        return Mono.zip(
+            orderService.getProductById(1),
+            orderService.getInventoryByProductId(1)
+        ).map(tuple -> Map.of(
             "orderId",   UUID.randomUUID().toString(),
             "status",    "CREATED",
-            "product",   product,
-            "inventory", inventory
-        );
+            "product",   tuple.getT1(), // Result from the first Mono
+            "inventory", tuple.getT2()  // Result from the second Mono
+        ));
     }
 
     @GetMapping("/test")
     public void getProps(){
         System.out.println("order-service max items : "+orderServiceProperties.getMax());
         System.out.println("order-service purchasing in currency : "+orderServiceProperties.getCurrency());
-
     }
 }

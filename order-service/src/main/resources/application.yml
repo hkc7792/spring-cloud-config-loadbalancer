@@ -9,4 +9,31 @@ spring:
   config:
     import: "configserver:http://localhost:8888"
 
+# ===================================================================
+# Resilience4j Configuration for Circuit Breaker and Retry
+# ===================================================================
+resilience4j:
+  # --- Circuit Breaker Configuration ---
+  circuitbreaker:
+    instances:
+      # This name 'external-service' will be referenced in the @CircuitBreaker annotation
+      external-service:
+        register-health-indicator: true
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10 # The last 10 requests are considered for failure rate
+        failure-rate-threshold: 50 # If 50% of the last 10 requests fail, the circuit opens
+        wait-duration-in-open-state: 20s # The circuit stays open for 20 seconds
+        permitted-number-of-calls-in-half-open-state: 3 # Allows 3 trial requests when half-open
+        automatic-transition-from-open-to-half-open-enabled: true
 
+  # --- Retry Configuration ---
+  retry:
+    instances:
+      # This name 'external-service' will be referenced in the @Retry annotation
+      external-service:
+        max-attempts: 3 # Tries a total of 3 times (1 initial + 2 retries)
+        wait-duration: 200ms # Waits 200ms between retry attempts
+        # By default, it retries on any Exception. You can configure specific exceptions.
+        retry-exceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
